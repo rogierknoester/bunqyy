@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 description = "A simple bunq API client"
-homepage = "github.com/rogierknoester/bunqyy"
+repository = "https://github.com/rogierknoester/bunqyy"
 readme = "readme.md"
 
 [dependencies]
