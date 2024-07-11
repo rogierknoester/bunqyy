@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::api_context::ManagedApiContext;
 use crate::common::BUNQ_BASE_URL;
-use crate::http::{BunqResponse, get_authenticated_client, process_response_content};
+use crate::http::{get_authenticated_client, process_response_content, BunqResponse};
 
 pub async fn get_monetary_accounts(
     api_context: &ManagedApiContext,

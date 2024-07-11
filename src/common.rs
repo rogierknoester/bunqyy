@@ -1,8 +1,7 @@
 use std::fmt::Display;
 
-use thiserror::Error;
 use crate::api_context::Environment;
-
+use thiserror::Error;
 
 pub(crate) const BUNQ_BASE_URL: &str = "https://api.bunq.com/v1";
 

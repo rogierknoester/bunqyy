@@ -12,10 +12,10 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;
 use tracing::{debug, info};
 
-use crate::common::{BUNQ_BASE_URL, BunqyyError, SetupContext};
+use crate::common::{BunqyyError, SetupContext, BUNQ_BASE_URL};
 use crate::domains::oauth::get_access_token;
 use crate::http::{
-    BunqResponse, get_unauthenticated_client, process_response_content, WellKnownBunqHeaders,
+    get_unauthenticated_client, process_response_content, BunqResponse, WellKnownBunqHeaders,
 };
 use crate::signing::{create_signer, generate_keypair, Signer};
 

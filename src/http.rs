@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 
 use async_trait::async_trait;
-use reqwest::{Client, ClientBuilder, Request, Response};
 use reqwest::header::HeaderValue;
+use reqwest::{Client, ClientBuilder, Request, Response};
 use reqwest_middleware::{
     ClientBuilder as MiddlewareClientBuilder, ClientWithMiddleware, Middleware, Next,
     Result as RequestResult,
@@ -12,7 +12,7 @@ use serde::Deserialize;
 use thiserror::Error;
 use tracing::{debug, error};
 
-use crate::api_context::{ManagedApiContext, refresh_session};
+use crate::api_context::{refresh_session, ManagedApiContext};
 use crate::signing::create_signer;
 
 pub enum WellKnownBunqHeaders {
@@ -184,8 +184,8 @@ impl Middleware for SessionRefreshingMiddleware {
 
 #[cfg(test)]
 mod tests {
+    use crate::http::{process_response_content, BunqResponse};
     use serde::Deserialize;
-    use crate::http::{BunqResponse, process_response_content};
 
     #[test]
     fn success_response_should_result_in_id() {
