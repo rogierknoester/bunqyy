@@ -220,14 +220,14 @@ pub async fn get_api_context(setup_context: &SetupContext) -> anyhow::Result<Api
 
         Ok(api_context_from_storage)
     } else {
-        api_context = setup_api_context(&setup_context).await?;
+        api_context = setup_api_context(setup_context).await?;
         persist_config(&api_context, setup_context.storage_path.as_str());
 
         Ok(api_context)
     };
 }
 
-fn persist_config(context: &ApiContext, path: &str) {
+pub fn persist_config(context: &ApiContext, path: &str) {
     // persist
 
     debug!("Persisting api context");
@@ -286,7 +286,7 @@ pub async fn setup_api_context(setup_context: &SetupContext) -> anyhow::Result<A
     info!("Requesting access token");
 
     // Fetch an access token that will be used as the api_key – because we use oauth flow
-    let api_key = get_access_token(&setup_context).await?;
+    let api_key = get_access_token(setup_context).await?;
     let mut context_builder = ContextBuilder::new_for_environment(setup_context.environment);
 
     context_builder.set_access_token(api_key.clone());
@@ -331,7 +331,7 @@ pub async fn setup_api_context(setup_context: &SetupContext) -> anyhow::Result<A
 
 /// Check if there is an earlier context file
 fn context_file_exists(path: &str) -> bool {
-    return File::open(path).is_ok();
+    File::open(path).is_ok()
 }
 
 /// Register the server this application is running with bunqyy

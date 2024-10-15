@@ -39,6 +39,7 @@ pub fn get_unauthenticated_client() -> anyhow::Result<Client> {
     Ok(client_builder.build()?)
 }
 
+#[allow(dead_code)]
 pub async fn get_authenticated_client(
     api_context: &ManagedApiContext,
 ) -> anyhow::Result<ClientWithMiddleware> {
