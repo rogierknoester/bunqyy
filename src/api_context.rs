@@ -9,6 +9,7 @@ use std::sync::Arc;
 use anyhow::{anyhow, Context};
 use chrono::{DateTime, Duration as ChronoDuration, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use tokio::sync::Mutex;
 use tracing::{debug, info};
 
@@ -554,22 +555,20 @@ async fn create_session(
 pub async fn get_installation_token() -> anyhow::Result<InstallationContext> {
     log::info!("Attempting to register installation token");
     #[derive(Debug, Clone, PartialEq, Deserialize)]
-    #[serde(rename_all = "camelCase")]
     enum Content {
         Token(Token),
         ServerPublicKey(ServerPublicKey),
+        #[serde(untagged)]
+        Unknown(Value),
     }
 
     #[derive(Default, Debug, Clone, PartialEq, Deserialize)]
-    #[serde(rename_all = "camelCase")]
     pub struct Token {
         pub token: String,
     }
 
     #[derive(Default, Debug, Clone, PartialEq, Deserialize)]
-    #[serde(rename_all = "camelCase")]
     pub struct ServerPublicKey {
-        #[serde(rename = "server_public_key")]
         pub server_public_key: String,
     }
 
