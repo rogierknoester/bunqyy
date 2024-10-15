@@ -186,6 +186,7 @@ impl Middleware for SessionRefreshingMiddleware {
 mod tests {
     use crate::http::{process_response_content, BunqResponse};
     use serde::Deserialize;
+    use serde_json::Value;
 
     #[test]
     fn success_response_should_result_in_id() {
@@ -217,6 +218,67 @@ mod tests {
         match result {
             BunqResponse::Success(content) => {
                 assert_eq!(content.response[0], Content { id: Id { id: 1 } });
+            }
+            _ => panic!("Expected success"),
+        }
+    }
+
+    #[test]
+    fn success_response_for_installation_token() {
+        let response = r#"
+        {
+          "Response": [
+            {
+              "Id": {
+                "id": 97822681
+              }
+            },
+            {
+              "Token": {
+                "id": 694050913,
+                "created": "2024-10-14 21:19:14.426211",
+                "updated": "2024-10-14 21:19:14.426211",
+                "token": "some-token"
+              }
+            },
+            {
+              "ServerPublicKey": {
+                "server_public_key": "some-key"
+              }
+            }
+          ]
+        }
+        "#;
+
+        #[derive(Debug, Clone, PartialEq, Deserialize)]
+        enum Content {
+            Token(Token),
+            ServerPublicKey(ServerPublicKey),
+            #[serde(untagged)]
+            Unknown(Value),
+        }
+
+        #[derive(Default, Debug, Clone, PartialEq, Deserialize)]
+        pub struct Token {
+            pub token: String,
+        }
+
+        #[derive(Default, Debug, Clone, PartialEq, Deserialize)]
+        pub struct ServerPublicKey {
+            #[serde(rename = "server_public_key")]
+            pub server_public_key: String,
+        }
+
+        let result = process_response_content::<Content>(response).unwrap();
+
+        match result {
+            BunqResponse::Success(content) => {
+                assert_eq!(
+                    content.response[1],
+                    Content::Token(Token {
+                        token: "some-token".to_owned()
+                    })
+                );
             }
             _ => panic!("Expected success"),
         }

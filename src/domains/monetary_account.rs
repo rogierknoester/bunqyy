@@ -36,6 +36,7 @@ pub async fn get_monetary_accounts(
 #[derive(Deserialize, Debug)]
 pub enum MonetaryAccount {
     MonetaryAccountBank(MonetaryAccountBank),
+    MonetaryAccountJoint(MonetaryAccountJoint),
     MonetaryAccountExternalSavings(MonetaryAccountExternalSavings),
     MonetaryAccountSavings(MonetaryAccountSavings),
 }
@@ -44,6 +45,9 @@ impl MonetaryAccount {
     pub fn get_name(&self) -> String {
         match self {
             MonetaryAccount::MonetaryAccountBank(account) => {
+                format!("{} : {}", &account.display_name, &account.description)
+            }
+            MonetaryAccount::MonetaryAccountJoint(account) => {
                 format!("{} : {}", &account.display_name, &account.description)
             }
             MonetaryAccount::MonetaryAccountExternalSavings(account) => {
@@ -58,6 +62,7 @@ impl MonetaryAccount {
     pub fn get_balance(&self) -> &Amount {
         match self {
             MonetaryAccount::MonetaryAccountBank(account) => &account.balance,
+            MonetaryAccount::MonetaryAccountJoint(account) => &account.balance,
             MonetaryAccount::MonetaryAccountExternalSavings(account) => &account.balance,
             MonetaryAccount::MonetaryAccountSavings(account) => &account.balance,
         }
@@ -66,6 +71,7 @@ impl MonetaryAccount {
     pub fn get_id(&self) -> MonetaryAccountId {
         match self {
             MonetaryAccount::MonetaryAccountBank(account) => account.id,
+            MonetaryAccount::MonetaryAccountJoint(account) => account.id,
             MonetaryAccount::MonetaryAccountExternalSavings(account) => account.id,
             MonetaryAccount::MonetaryAccountSavings(account) => account.id,
         }
@@ -74,6 +80,7 @@ impl MonetaryAccount {
     pub fn get_status(&self) -> &Status {
         match self {
             MonetaryAccount::MonetaryAccountBank(account) => &account.status,
+            MonetaryAccount::MonetaryAccountJoint(account) => &account.status,
             MonetaryAccount::MonetaryAccountExternalSavings(account) => &account.status,
             MonetaryAccount::MonetaryAccountSavings(account) => &account.status,
         }
@@ -82,6 +89,17 @@ impl MonetaryAccount {
 
 #[derive(Deserialize, Debug)]
 pub struct MonetaryAccountBank {
+    pub currency: String,
+    pub balance: Amount,
+    pub status: Status,
+    pub sub_status: String,
+    pub description: String,
+    pub display_name: String,
+    pub id: MonetaryAccountId,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct MonetaryAccountJoint {
     pub currency: String,
     pub balance: Amount,
     pub status: Status,
